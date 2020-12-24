@@ -332,6 +332,7 @@ const Home = () => {
     const [currentLocation, setCurrentLocation] = useState(initialCurrentLocation)
 
 
+    // Header Function
     function renderHeader(){
         return(
             <View style={{flexDirection:'row',height:50}}>
@@ -364,7 +365,7 @@ const Home = () => {
 
                         }}
                     >
-                        <Text style={{...FONTS.h3}}>Current Location</Text>
+                        <Text style={{...FONTS.h3}}>{currentLocation.streetName}</Text>
                     </View>
                 </View>
 
@@ -390,11 +391,91 @@ const Home = () => {
         )
     }
 
+    // Main categories render function
+
+    function onSelectCategory(category){
+        //Filter resturent
+
+        let restaurantList = restaurantData.filter(a => a.categories.includes(category.id))
+        setRestaurants(restaurantList)
+
+        setSelectedCategory(category)  
+
+    }
+
+
+    function renderMainCategories(){
+        const renderItem = ({item}) => {
+            return(
+                <TouchableOpacity
+                    style={{
+                        padding:SIZES.padding,
+                        paddingBottom:SIZES.padding * 2,
+                        backgroundColor:(selectedCategory?.id == item.id) ? COLORS.primary : COLORS.white,
+                        borderRadius:SIZES.radius,
+                        alignItems:'center',
+                        justifyContent:'center',
+                        marginRight:SIZES.padding,
+                        ...styles.shadow
+                    }}
+                    onPress = {() => onSelectCategory(item)}
+                >
+                    <View style={{
+                    width:50,
+                    height:50,
+                    borderRadius:25,
+                    alignItems:'center',
+                    justifyContent:'center',
+                    backgroundColor:(selectedCategory?.id == item.id) ? COLORS.white : COLORS.lightGray
+                }}>
+                    <Image
+                    source={item.icon}
+                    resizeMethod='auto'
+                    style={{
+                        width:30,
+                        height:30
+                    }}
+
+                />
+
+                </View>
+
+                <Text 
+                style={{
+                    marginTop:SIZES.padding,
+                    color:(selectedCategory?.id == item.id)?COLORS.white:COLORS.black,
+                    ...FONTS.body5
+                    }}
+                    >
+                        {item.name}
+                    </Text>
+
+                </TouchableOpacity>
+            )
+        }
+        return(
+            <View style={{padding:SIZES.padding * 2}}>
+                <Text style={{...FONTS.h1}}>Main</Text>
+                <Text style={{...FONTS.h1}}>Categories</Text>
+                <FlatList
+                    data={categories}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={item =>   `${item.id}`}
+                    renderItem = {renderItem}
+                />
+                
+                
+
+            </View>
+        )
+    }
     
 
     return (
         <SafeAreaView>
             {renderHeader()}
+            {renderMainCategories()}
         </SafeAreaView>
     )
 }
