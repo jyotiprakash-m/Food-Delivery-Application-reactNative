@@ -1,22 +1,31 @@
-import React,{useEffect,useState} from 'react'
-import { View, Text,StyleSheet,SafeAreaView,TouchableOpacity,Image,Animated } from 'react-native'
+import React from "react";
+import {
+    StyleSheet,
+    SafeAreaView,
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    Animated
+} from "react-native";
+import { isIphoneX } from 'react-native-iphone-x-helper'
+
 import { icons, COLORS, SIZES, FONTS } from '../constants'
 
-import {isIphoneX} from 'react-native-iphone-x-helper'
-const Restaurant = ({route,navigation}) => {
+const Restaurant = ({ route, navigation }) => {
 
-    const scrollX = new Animated.Value(0)
-    const [restaurant, setRestaurant] = useState(null);
-    const [currentLocation, setCurrentLocation] = useState(null);
-    const [orderItems, setOrderItems] = useState([]);
+    const scrollX = new Animated.Value(0);
+    const [restaurant, setRestaurant] = React.useState(null);
+    const [currentLocation, setCurrentLocation] = React.useState(null);
+    const [orderItems, setOrderItems] = React.useState([]);
 
+    React.useEffect(() => {
+        let { item, currentLocation } = route.params;
 
-    useEffect(()=>{
-        let {item,currentLocation} = route.params;
         setRestaurant(item)
-        setCurrentLocation(item)
+        setCurrentLocation(currentLocation)
     })
-    
+
     function editOrder(action, menuId, price) {
         let orderList = orderItems.slice()
         let item = orderList.filter(a => a.menuId == menuId)
@@ -72,198 +81,190 @@ const Restaurant = ({route,navigation}) => {
         return total.toFixed(2)
     }
 
-    //  Render Header function
-    function renderHeader(){
-        return(
-            <View style={{flexDirection:'row'}}>
+    function renderHeader() {
+        return (
+            <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
                     style={{
-                        width:50,
-                        paddingLeft:SIZES.padding * 2,
-                        justifyContent:'center'
+                        width: 50,
+                        paddingLeft: SIZES.padding * 2,
+                        justifyContent: 'center'
                     }}
-                    onPress={()=>navigation.goBack()}
+                    onPress={() => navigation.goBack()}
                 >
                     <Image
-                    source={icons.back}
-                    resizeMethod='auto'
-                    style={{
-                        width:30,
-                        height:30,
-                    }}
+                        source={icons.back}
+                        resizeMode="contain"
+                        style={{
+                            width: 30,
+                            height: 30
+                        }}
                     />
-
                 </TouchableOpacity>
 
-                {/* Restaurent name Section */}
-                
-                <View 
+                {/* Restaurant Name Section */}
+                <View
                     style={{
-                        flex:1,
-                        alignItems:'center',
-                        justifyContent:'center'
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center'
                     }}
                 >
                     <View
                         style={{
-                            height:58,
-                            alignItems:'center',
-                            justifyContent:'center',
-                            paddingHorizontal:SIZES.padding * 3,
-                            borderRadius:SIZES.radius,
-                            backgroundColor:COLORS.lightGray3
+                            height: 50,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            paddingHorizontal: SIZES.padding * 3,
+                            borderRadius: SIZES.radius,
+                            backgroundColor: COLORS.lightGray3
                         }}
                     >
-                        <Text style={{...FONTS.h3}}>{restaurant?.name}</Text>
+                        <Text style={{ ...FONTS.h3 }}>{restaurant?.name}</Text>
                     </View>
-
                 </View>
-                <TouchableOpacity 
+
+                <TouchableOpacity
                     style={{
-                        width:50,
-                        paddingRight:SIZES.padding * 2,
-                        justifyContent:'center'
+                        width: 50,
+                        paddingRight: SIZES.padding * 2,
+                        justifyContent: 'center'
                     }}
                 >
                     <Image
                         source={icons.list}
-                        resizeMethod='auto'
+                        resizeMode="contain"
                         style={{
-                            width:30,
-                            height:30
+                            width: 30,
+                            height: 30
                         }}
-
                     />
-
                 </TouchableOpacity>
             </View>
         )
     }
 
-    // Render foodInfo function
-
-    function renderFoodInfo(){
-        return(
+    function renderFoodInfo() {
+        return (
             <Animated.ScrollView
                 horizontal
                 pagingEnabled
                 scrollEventThrottle={16}
-                snapToAlignment='center'
+                snapToAlignment="center"
                 showsHorizontalScrollIndicator={false}
+                onScroll={Animated.event([
+                    { nativeEvent: { contentOffset: { x: scrollX } } }
+                ], { useNativeDriver: false })}
             >
                 {
                     restaurant?.menu.map((item, index) => (
-                        <View key={`menu-${index}`} style={{alignItems:'center'}}>
-                            <View style={{height:SIZES.height * 0.35}}>
+                        <View
+                            key={`menu-${index}`}
+                            style={{ alignItems: 'center' }}
+                        >
+                            <View style={{ height: SIZES.height * 0.35 }}>
                                 {/* Food Image */}
-                                    
                                 <Image
                                     source={item.photo}
-                                    resizeMethod='auto'
+                                    resizeMode="cover"
                                     style={{
-                                        width:SIZES.width,
-                                        height:'100%'
+                                        width: SIZES.width,
+                                        height: "100%"
                                     }}
-
                                 />
 
-                                {/* Quentity Section */}
-
+                                {/* Quantity */}
                                 <View
                                     style={{
-                                        position:'absolute',
-                                        width:SIZES.width,
-                                        height:50,
-                                        justifyContent:'center',
-                                        flexDirection:'row',
-                                        bottom:-20
+                                        position: 'absolute',
+                                        bottom: - 20,
+                                        width: SIZES.width,
+                                        height: 50,
+                                        justifyContent: 'center',
+                                        flexDirection: 'row'
                                     }}
                                 >
                                     <TouchableOpacity
                                         style={{
-                                            width:50,
-                                            backgroundColor:COLORS.white,
-                                            alignItems:'center',
-                                            justifyContent:'center',
-                                            borderTopLeftRadius:25,
-                                            borderBottomLeftRadius:25
+                                            width: 50,
+                                            backgroundColor: COLORS.white,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderTopLeftRadius: 25,
+                                            borderBottomLeftRadius: 25
                                         }}
                                         onPress={() => editOrder("-", item.menuId, item.price)}
                                     >
-                                        <Text style={{...FONTS.body1}}>-</Text>
+                                        <Text style={{ ...FONTS.body1 }}>-</Text>
                                     </TouchableOpacity>
-                                    <View style={{
-                                        width:50,
-                                        backgroundColor:COLORS.white,
-                                        alignItems:"center",
-                                        justifyContent:'center'
-                                    }}>
-                                        <Text style={{...FONTS.h2}}>{getOrderQty(item.menuId)}</Text>
 
+                                    <View
+                                        style={{
+                                            width: 50,
+                                            backgroundColor: COLORS.white,
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <Text style={{ ...FONTS.h2 }}>{getOrderQty(item.menuId)}</Text>
                                     </View>
+
                                     <TouchableOpacity
                                         style={{
-                                            width:50,
-                                            backgroundColor:COLORS.white,
-                                            alignItems:'center',
-                                            justifyContent:'center',
-                                            borderTopRightRadius:25,
-                                            borderBottomRightRadius:25
+                                            width: 50,
+                                            backgroundColor: COLORS.white,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderTopRightRadius: 25,
+                                            borderBottomRightRadius: 25
                                         }}
                                         onPress={() => editOrder("+", item.menuId, item.price)}
                                     >
-                                        <Text style={{...FONTS.body1}}>+</Text>
+                                        <Text style={{ ...FONTS.body1 }}>+</Text>
                                     </TouchableOpacity>
-
                                 </View>
-
                             </View>
 
-                            {/* Name And description */}
-
-                            <View style={{
-                                width:SIZES.width,
-                                alignItems:'center',
-                                marginTop:15,
-                                paddingHorizontal:SIZES.padding * 2
-                            }}>
-                                <Text style={{marginVertical:10,textAlign:'center',...FONTS.h2}}>{item.name} - {item.price.toFixed(2)}{' '}$</Text>
-                                <Text style={{...FONTS.body3}}>{item.description}</Text>
-
+                            {/* Name & Description */}
+                            <View
+                                style={{
+                                    width: SIZES.width,
+                                    alignItems: 'center',
+                                    marginTop: 15,
+                                    paddingHorizontal: SIZES.padding * 2
+                                }}
+                            >
+                                <Text style={{ marginVertical: 10, textAlign: 'center', ...FONTS.h2 }}>{item.name} - {item.price.toFixed(2)}</Text>
+                                <Text style={{ ...FONTS.body3 }}>{item.description}</Text>
                             </View>
 
                             {/* Calories */}
-
-                            <View 
+                            <View
                                 style={{
-                                    flexDirection:'row',
-                                    marginTop:10
+                                    flexDirection: 'row',
+                                    marginTop: 10
                                 }}
                             >
                                 <Image
                                     source={icons.fire}
                                     style={{
-                                        width:20,
-                                        height:20,
-                                        marginRight:10
+                                        width: 20,
+                                        height: 20,
+                                        marginRight: 10
                                     }}
                                 />
+
                                 <Text style={{
-                                    ...FONTS.body3,
-                                    color:COLORS.darkgray,
-
+                                    ...FONTS.body3, color: COLORS.darygray
                                 }}>{item.calories.toFixed(2)} cal</Text>
-
                             </View>
                         </View>
                     ))
                 }
-
             </Animated.ScrollView>
         )
     }
 
-    // render Dots Function
     function renderDots() {
 
         const dotPosition = Animated.divide(scrollX, SIZES.width)
@@ -316,7 +317,6 @@ const Restaurant = ({route,navigation}) => {
             </View>
         )
     }
-    // render Order Function
 
     function renderOrder() {
         return (
@@ -376,7 +376,7 @@ const Restaurant = ({route,navigation}) => {
                                     tintColor: COLORS.darkgray
                                 }}
                             />
-                            <Text style={{ marginLeft: SIZES.padding, ...FONTS.h4 }}>XX-8888</Text>
+                            <Text style={{ marginLeft: SIZES.padding, ...FONTS.h4 }}>8888</Text>
                         </View>
                     </View>
 
@@ -423,22 +423,20 @@ const Restaurant = ({route,navigation}) => {
         )
     }
 
-
-
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {renderHeader()}
             {renderFoodInfo()}
             {renderOrder()}
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        backgroundColor:COLORS.lightGray
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.lightGray2
     }
 })
 
-export default Restaurant
+export default Restaurant;
